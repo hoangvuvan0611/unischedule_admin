@@ -3,7 +3,7 @@ import {LayoutDashboard, User2} from "lucide-react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import {useSidebar} from "@/contexts/layoutContext";
-import {MenuItem} from "@/types/menu_item";
+import {MenuItem} from "@/types/menuItem";
 
 const menuItems: MenuItem [] = [
   { title: 'Tổng quan', href: '/', icon: LayoutDashboard},

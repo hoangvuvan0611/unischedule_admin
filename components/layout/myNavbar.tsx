@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function MyNavbar() {
   return (
-    <div className="flex justify-around border-b-gray-300 border-b-1 py-2 max-h-1/12">
+    <div className="flex justify-around py-2 max-h-1/12">
       <div className="w-2/12 flex items-center px-4">
         <div className="hover:bg-gray-100 p-2 rounded-4xl mr-2">
           <ListIndentDecrease width={20} height={20} />

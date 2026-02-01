@@ -1,1 +1,1 @@
-export default function Home() {  return (    <div className="flex min-h-screen justify-around">      <div className="rounded-4xl shadow-2xl h-1/3 w-2/12 bg-green-300">Hoàng</div>    </div>  );}
+import DashBoard from "@/components/pages/dashboard/dashboard";export default function Home() {  return (    <DashBoard/>  );}
