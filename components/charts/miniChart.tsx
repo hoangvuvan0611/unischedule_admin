@@ -15,6 +15,16 @@ const chartData = [
   { month: "10", desktop: 314},
 ];
 
+export interface ChartData {
+  month: string;
+  day: string;
+  desktop: number;
+}
+
+export interface MiniChartData {
+  chartData: ChartData[];
+}
+
 const chartConfig = {
   desktop: {
     label: "Desktop",
@@ -28,7 +38,8 @@ interface MiniChartProps {
   width: string;
 }
 
-export default function MiniChart({height, width}: MiniChartProps) {
+export default function MiniChart({height, width}: MiniChartProps,
+                                  {chartData}: MiniChartData) {
   return (
     <ChartContainer config={chartConfig} className={`${height} ${width}`}>
       <BarChart accessibilityLayer data={chartData}>
