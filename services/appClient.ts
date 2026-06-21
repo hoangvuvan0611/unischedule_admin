@@ -3,7 +3,7 @@ export const RESPONSE_STATUS_401 = 401;
 export const REF_HOME = "/";
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8801",
   timeout: 60000,
   headers: {
     "Content-Type": "application/json"

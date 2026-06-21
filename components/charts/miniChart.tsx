@@ -2,7 +2,7 @@
 import {ChartConfig, ChartContainer} from "@/components/ui/chart";
 import {Bar, BarChart, CartesianGrid} from "recharts";
 
-const chartData = [
+const defaultChartData = [
   { month: "1", desktop: 186},
   { month: "2", desktop: 305},
   { month: "3", desktop: 237},
@@ -17,7 +17,7 @@ const chartData = [
 
 export interface ChartData {
   month: string;
-  day: string;
+  day?: string;
   desktop: number;
 }
 
@@ -36,10 +36,10 @@ const chartConfig = {
 interface MiniChartProps {
   height: string;
   width: string;
+  chartData?: ChartData[];
 }
 
-export default function MiniChart({height, width}: MiniChartProps,
-                                  {chartData}: MiniChartData) {
+export default function MiniChart({height, width, chartData = defaultChartData}: MiniChartProps) {
   return (
     <ChartContainer config={chartConfig} className={`${height} ${width}`}>
       <BarChart accessibilityLayer data={chartData}>

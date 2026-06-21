@@ -1,0 +1,2487 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "UniSchedule Service API",
+    "description": "API cho quản trị UniSchedule, bao gồm truy vấn account, nhật ký truy cập, dashboard tổng hợp và các báo cáo phân tích/tăng trưởng theo kỳ.",
+    "contact": {
+      "name": "UniSchedule Service"
+    },
+    "version": "v1.0.0"
+  },
+  "externalDocs": {
+    "description": "Swagger UI",
+    "url": "/swagger-ui/index.html"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8801",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User Access Log",
+      "description": "Các API tra cứu lịch sử truy cập, phục vụ kiểm tra hoạt động đăng nhập và phân tích hành vi sử dụng theo thiết bị/thời gian."
+    },
+    {
+      "name": "Account",
+      "description": "Các API tra cứu account phục vụ màn hình quản trị, bao gồm tìm kiếm, phân trang và lấy chi tiết account."
+    },
+    {
+      "name": "Report",
+      "description": "Nhóm API báo cáo tổng hợp, thống kê chi tiết và tăng trưởng theo kỳ cho account, batch account và access log."
+    }
+  ],
+  "paths": {
+    "/noti/checkSendNotiFromAdminVnua": {
+      "post": {
+        "tags": [
+          "noti-controller"
+        ],
+        "operationId": "sendNotiFromAdminVnua",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInfoDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/customer/sendReview": {
+      "post": {
+        "tags": [
+          "customer-controller"
+        ],
+        "operationId": "sendReviewUniScheduleApp",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "loginSession",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/loginAPI": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "testLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/loginAPIV2": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "loginAPIV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/checkAndSaveDeviceInfoLogin": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "checkAndSaveDeviceInfoLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInfoDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/checkAndDeleteDeviceInfoLogin": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "checkAndDeleteDeviceInfoLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInfoDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user-access-logs": {
+      "get": {
+        "tags": [
+          "User Access Log"
+        ],
+        "summary": "Truy vấn danh sách log có phân trang và lọc",
+        "operationId": "query",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Lọc theo tên đăng nhập chính xác hoặc theo chuỗi do backend hỗ trợ."
+          },
+          {
+            "name": "osOfDevice",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Lọc theo hệ điều hành hoặc tên thiết bị, ví dụ `Android 14`, `iOS 17`."
+          },
+          {
+            "name": "accountType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Lọc theo loại account hoặc khoá, ví dụ `Khoá 66`."
+          },
+          {
+            "name": "createdFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Mốc bắt đầu thời gian tạo log, định dạng ISO 8601."
+          },
+          {
+            "name": "createdTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Mốc kết thúc thời gian tạo log, định dạng ISO 8601."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "description": "Số trang bắt đầu từ `0`."
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            },
+            "description": "Số bản ghi trên mỗi trang."
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "createdAt"
+            },
+            "description": "Trường dùng để sắp xếp, mặc định là `createdAt`."
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "desc"
+            },
+            "description": "Chiều sắp xếp: `asc` hoặc `desc`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách log truy cập theo điều kiện lọc, kèm metadata phân trang.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataPageResponseDTOUserAccessLogInfoDTO"
+                }
+              }
+            }
+          }
+        },
+        "description": "Trả về danh sách lịch sử truy cập có hỗ trợ lọc theo username, hệ điều hành, loại account và khoảng thời gian tạo log. Dữ liệu được phân trang để phù hợp với màn hình quản trị và export từng đợt."
+      }
+    },
+    "/user-access-logs/{id}": {
+      "get": {
+        "tags": [
+          "User Access Log"
+        ],
+        "summary": "Lấy log theo ID",
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID của log",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin chi tiết của một bản ghi access log.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataUserAccessLogs"
+                }
+              }
+            }
+          }
+        },
+        "description": "Lấy chi tiết một bản ghi lịch sử truy cập theo ID để phục vụ điều tra hoặc đối chiếu dữ liệu trên dashboard."
+      }
+    },
+    "/user-access-logs/recent": {
+      "get": {
+        "tags": [
+          "User Access Log"
+        ],
+        "summary": "Lấy các log gần nhất",
+        "operationId": "getRecent",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "description": "Số lượng bản ghi muốn lấy, mặc định `10`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách access log mới nhất theo thời gian giảm dần.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataListUserAccessLogInfoDTO"
+                }
+              }
+            }
+          }
+        },
+        "description": "Lấy nhanh các bản ghi truy cập mới nhất để hiển thị trên dashboard hoặc widget hoạt động gần đây."
+      }
+    },
+    "/user-access-logs/by-username/{username}": {
+      "get": {
+        "tags": [
+          "User Access Log"
+        ],
+        "summary": "Lấy log đầu tiên theo username",
+        "operationId": "getByUsername",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "Tên đăng nhập",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Một bản ghi access log tương ứng với username được yêu cầu.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataUserAccessLogs"
+                }
+              }
+            }
+          }
+        },
+        "description": "Truy vấn bản ghi truy cập đầu tiên tìm thấy theo username. Endpoint phù hợp cho các màn hình tra cứu nhanh theo người dùng."
+      }
+    },
+    "/report/dashboard": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getDashboard",
+        "responses": {
+          "200": {
+            "description": "Dữ liệu dashboard tổng hợp để render một màn hình báo cáo đầy đủ.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataReportDashboardDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy dashboard báo cáo tổng hợp",
+        "description": "Trả về toàn bộ dữ liệu tổng hợp cho dashboard quản trị: thống kê account, batch, biểu đồ trạng thái, xu hướng tạo account, access log, thiết bị và các khối analytics/tăng trưởng theo kỳ."
+      }
+    },
+    "/report/accounts/summary": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccountSummary",
+        "responses": {
+          "200": {
+            "description": "Thông tin tóm tắt tổng quan về account.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy tóm tắt account",
+        "description": "Trả về thông tin tóm tắt cấp cao về account để phục vụ thẻ KPI hoặc block overview. Endpoint này hiện trả về object tổng quát nên cần đối chiếu thêm với backend nếu muốn typed schema chặt hơn."
+      }
+    },
+    "/report/accounts/statistics": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccountStatistics",
+        "responses": {
+          "200": {
+            "description": "Khối thống kê account cho dashboard và báo cáo tổng quan.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccountStatisticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy thống kê account",
+        "description": "Trả về thống kê account theo các mốc thời gian chuẩn như hôm nay, tuần này, tháng này và năm nay, kèm account mới nhất và account cũ nhất."
+      }
+    },
+    "/report/accounts/recent": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getRecentAccounts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "description": "Số lượng account muốn lấy, mặc định `10`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách account mới tạo gần đây.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataListAccountReportDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy account mới tạo gần đây",
+        "description": "Trả về danh sách account mới nhất theo thời gian tạo, thường dùng cho bảng recent accounts trên dashboard."
+      }
+    },
+    "/report/accounts/between": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccountsCreatedBetween",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Thời điểm bắt đầu, định dạng ISO 8601."
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Thời điểm kết thúc, định dạng ISO 8601."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách account được tạo trong khoảng thời gian yêu cầu.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataListAccountReportDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy account theo khoảng thời gian tạo",
+        "description": "Truy vấn toàn bộ account được tạo trong một khoảng thời gian xác định. Phù hợp cho export dữ liệu hoặc tạo báo cáo chiến dịch theo giai đoạn."
+      }
+    },
+    "/report/accounts/batches/{batchCode}": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccountBatchByCode",
+        "parameters": [
+          {
+            "name": "batchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Báo cáo chi tiết của batch account theo mã batch.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccountBatchReportDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy báo cáo chi tiết theo batch",
+        "description": "Trả về báo cáo chi tiết của một batch account, bao gồm tổng số account, phân loại trạng thái và danh sách account thuộc batch đó."
+      }
+    },
+    "/report/accounts/batches/{batchCode}/summary": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getBatchSummary",
+        "parameters": [
+          {
+            "name": "batchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin tóm tắt của batch theo mã batch.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy tóm tắt một batch",
+        "description": "Trả về dữ liệu tóm tắt cho một batch cụ thể. Do schema hiện là object tổng quát, nên frontend cần kiểm tra contract backend nếu muốn sử dụng trực tiếp."
+      }
+    },
+    "/report/accounts/batches/summary": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccountBatchSummary",
+        "responses": {
+          "200": {
+            "description": "Tổng quan toàn bộ batch account.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccountBatchSummaryDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy tổng quan các batch account",
+        "description": "Trả về bức tranh tổng quan theo batch: tổng số account, số batch, batch lớn nhất/nhỏ nhất và danh sách report chi tiết của từng batch."
+      }
+    },
+    "/report/accounts/batches/stats/{batchCode}": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccountBatchStatsByCode",
+        "parameters": [
+          {
+            "name": "batchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thống kê trạng thái account của batch theo mã batch.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccountBatchStatsDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy thống kê trạng thái theo batch",
+        "description": "Trả về thống kê trạng thái account của một batch cụ thể mà không kèm danh sách account chi tiết."
+      }
+    },
+    "/report/accounts/batches/stats/{batchCode}/summary": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getBatchStatsSummary",
+        "parameters": [
+          {
+            "name": "batchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin tóm tắt thống kê trạng thái của batch.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy tóm tắt thống kê trạng thái của batch",
+        "description": "Trả về object tóm tắt thống kê cho batch cụ thể. Schema hiện chưa được typed chi tiết trong spec gốc."
+      }
+    },
+    "/report/accounts/batches/stats/summary": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccountBatchStatsSummary",
+        "responses": {
+          "200": {
+            "description": "Tổng hợp thống kê trạng thái của toàn bộ batch account.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccountBatchStatsSummaryDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy tổng hợp thống kê trạng thái theo batch",
+        "description": "Trả về tổng hợp trạng thái account trên toàn bộ batch, bao gồm số lượng active, inactive, dormant, unknown và danh sách thống kê theo từng batch."
+      }
+    },
+    "/report/accounts/batches/stats/all": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAllAccountBatchStats",
+        "responses": {
+          "200": {
+            "description": "Danh sách thống kê trạng thái của tất cả batch.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataListAccountBatchStatsDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy toàn bộ thống kê batch",
+        "description": "Trả về danh sách thống kê trạng thái của tất cả batch để phục vụ biểu đồ, bảng đối chiếu hoặc export."
+      }
+    },
+    "/report/accounts/batches/codes": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAllBatchCodes",
+        "responses": {
+          "200": {
+            "description": "Danh sách mã batch.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataListString"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách mã batch",
+        "description": "Trả về toàn bộ mã batch hiện có để dùng cho dropdown filter hoặc đối chiếu dữ liệu báo cáo."
+      }
+    },
+    "/report/accounts/batches/all": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAllAccountBatches",
+        "responses": {
+          "200": {
+            "description": "Danh sách đầy đủ báo cáo batch account.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataListAccountBatchReportDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy toàn bộ báo cáo batch",
+        "description": "Trả về đầy đủ các batch report, bao gồm tổng hợp từng batch và dữ liệu danh sách account nếu backend cung cấp."
+      }
+    },
+    "/report/accounts/analytics": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccountAnalytics",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            },
+            "description": "Số ngày gần nhất cần phân tích, mặc định `30`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Báo cáo phân tích account và tăng trưởng theo kỳ để hiển thị xu hướng.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccountAnalyticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy phân tích và báo cáo tăng trưởng account",
+        "description": "Trả về bộ dữ liệu analytics của account trong số ngày gần nhất, bao gồm tổng số account, biểu đồ theo loại, biểu đồ theo ngày/giờ và khối tăng trưởng so sánh giữa kỳ hiện tại với kỳ trước liền kề."
+      }
+    },
+    "/report/accounts/all": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAllAccountsForReport",
+        "responses": {
+          "200": {
+            "description": "Danh sách toàn bộ account ở định dạng report.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataListAccountReportDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy toàn bộ account phục vụ báo cáo",
+        "description": "Trả về toàn bộ account dưới dạng report DTO để phục vụ dashboard, bảng tổng hợp hoặc export dữ liệu."
+      }
+    },
+    "/report/access-logs/analytics": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "operationId": "getAccessLogAnalytics",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            },
+            "description": "Số ngày gần nhất cần phân tích, mặc định `30`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Báo cáo phân tích access log và tăng trưởng theo kỳ.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccessLogAnalyticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy phân tích và báo cáo tăng trưởng access log",
+        "description": "Trả về bộ dữ liệu analytics của access log trong số ngày gần nhất, bao gồm tổng lượt truy cập, phân bố theo loại account, biểu đồ theo ngày/giờ và tốc độ tăng trưởng giữa hai kỳ liên tiếp."
+      }
+    },
+    "/firebase": {
+      "get": {
+        "tags": [
+          "firebase-controller"
+        ],
+        "operationId": "sendMailFirebase",
+        "parameters": [
+          {
+            "name": "noticeFirebaseDTO",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/NoticeFirebaseDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/session": {
+      "get": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "getSessionValue",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/account/{id}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Lấy account theo ID",
+        "operationId": "getAccountById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID của account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin chi tiết của account.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccountInfoDTO"
+                }
+              }
+            }
+          }
+        },
+        "description": "Lấy thông tin chi tiết của một account theo ID. Dùng cho màn hình xem chi tiết hoặc thao tác đối chiếu dữ liệu."
+      }
+    },
+    "/account/random": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Lấy random một account",
+        "operationId": "getRandom",
+        "responses": {
+          "200": {
+            "description": "Một account ngẫu nhiên.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          }
+        },
+        "description": "Lấy ngẫu nhiên một account để kiểm thử nhanh, demo dữ liệu hoặc sanity check backend."
+      }
+    },
+    "/account/query": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Truy vấn account có phân trang và lọc",
+        "operationId": "queryAccounts",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Lọc theo tên đăng nhập."
+          },
+          {
+            "name": "createdFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Mốc bắt đầu ngày tạo account, định dạng ISO 8601."
+          },
+          {
+            "name": "createdTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Mốc kết thúc ngày tạo account, định dạng ISO 8601."
+          },
+          {
+            "name": "updatedFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Mốc bắt đầu ngày cập nhật account, định dạng ISO 8601."
+          },
+          {
+            "name": "updatedTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Mốc kết thúc ngày cập nhật account, định dạng ISO 8601."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "description": "Số trang bắt đầu từ `0`."
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            },
+            "description": "Số bản ghi trên mỗi trang."
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "createdAt"
+            },
+            "description": "Trường dùng để sắp xếp, mặc định là `createdAt`."
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "desc"
+            },
+            "description": "Chiều sắp xếp: `asc` hoặc `desc`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách account theo điều kiện lọc, kèm metadata phân trang.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataPageResponseDTOAccountInfoDTO"
+                }
+              }
+            }
+          }
+        },
+        "description": "Truy vấn danh sách account có hỗ trợ lọc theo username, ngày tạo, ngày cập nhật, phân trang và sắp xếp. Endpoint này phù hợp cho bảng quản trị account."
+      }
+    },
+    "/account/by-username/{username}": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Lấy account theo username",
+        "operationId": "getAccountByUsername",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "Tên đăng nhập",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin account tương ứng với username.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataAccountInfoDTO"
+                }
+              }
+            }
+          }
+        },
+        "description": "Lấy thông tin account theo username để hỗ trợ tìm kiếm nhanh từ giao diện quản trị."
+      }
+    },
+    "/account/accounts": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Lấy N account gần nhất",
+        "operationId": "getAccounts",
+        "parameters": [
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "description": "Số lượng account muốn lấy, mặc định `10`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách account được trả về theo số lượng yêu cầu.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Lấy danh sách N account gần nhất hoặc số lượng account theo cấu hình để phục vụ preview nhanh."
+      }
+    },
+    "/report/accounts/growth-over-time": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "summary": "Lấy báo cáo tăng trưởng account theo thời gian",
+        "description": "Trả về chuỗi thời gian tăng trưởng account trong một khoảng thời gian chỉ định. Dữ liệu gồm các mốc thời gian liên tiếp để frontend dựng line chart, area chart hoặc bảng so sánh xu hướng.",
+        "operationId": "getAccountGrowthOverTime",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "description": "Mốc bắt đầu của báo cáo, định dạng ISO 8601. Nếu bỏ trống, backend có thể tự suy ra theo `days`.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "description": "Mốc kết thúc của báo cáo, định dạng ISO 8601. Nếu bỏ trống, backend có thể dùng thời điểm hiện tại.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Số ngày gần nhất cần thống kê khi không truyền `startDate` và `endDate`, mặc định `30`.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            }
+          },
+          {
+            "name": "groupBy",
+            "in": "query",
+            "required": false,
+            "description": "Đơn vị gom nhóm chuỗi thời gian để vẽ biểu đồ tăng trưởng.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "default": "day"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Báo cáo tăng trưởng account theo thời gian, gồm time series và tổng hợp tăng trưởng toàn kỳ.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataTimeGrowthReportDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/report/access-logs/growth-over-time": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "summary": "Lấy báo cáo tăng trưởng access log theo thời gian",
+        "description": "Trả về chuỗi thời gian tăng trưởng access log trong một khoảng thời gian chỉ định. Endpoint phù hợp cho biểu đồ xu hướng truy cập và đối chiếu mức tăng trưởng giữa các giai đoạn.",
+        "operationId": "getAccessLogGrowthOverTime",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "description": "Mốc bắt đầu của báo cáo, định dạng ISO 8601. Nếu bỏ trống, backend có thể tự suy ra theo `days`.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "description": "Mốc kết thúc của báo cáo, định dạng ISO 8601. Nếu bỏ trống, backend có thể dùng thời điểm hiện tại.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Số ngày gần nhất cần thống kê khi không truyền `startDate` và `endDate`, mặc định `30`.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            }
+          },
+          {
+            "name": "groupBy",
+            "in": "query",
+            "required": false,
+            "description": "Đơn vị gom nhóm chuỗi thời gian để vẽ biểu đồ tăng trưởng.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "default": "day"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Báo cáo tăng trưởng access log theo thời gian, gồm time series và tổng hợp tăng trưởng toàn kỳ.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDataTimeGrowthReportDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginInfoDTO": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "deviceToken": {
+            "type": "string"
+          },
+          "osOfDevice": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string"
+          }
+        }
+      },
+      "ReviewDTO": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "userCode": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseDataObject": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {}
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "PageResponseDTOUserAccessLogInfoDTO": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserAccessLogInfoDTO"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        },
+        "description": "Kết quả phân trang cho danh sách access log."
+      },
+      "ResponseDataPageResponseDTOUserAccessLogInfoDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResponseDTOUserAccessLogInfoDTO"
+          }
+        },
+        "description": "Response chuẩn bọc dữ liệu phân trang access log."
+      },
+      "UserAccessLogInfoDTO": {
+        "type": "object",
+        "description": "Thông tin lịch sử truy cập của user",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID của bản ghi log",
+            "example": "686ea1d0f8f3a7a1a0b1c235"
+          },
+          "username": {
+            "type": "string",
+            "description": "Tên đăng nhập",
+            "example": "6656485"
+          },
+          "osOfDevice": {
+            "type": "string",
+            "description": "Thông tin hệ điều hành hoặc thiết bị",
+            "example": "Android 14"
+          },
+          "accountType": {
+            "type": "string",
+            "description": "Loại tài khoản suy ra từ username",
+            "example": "Khoá 66"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm truy cập"
+          }
+        }
+      },
+      "ResponseDataUserAccessLogs": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserAccessLogs"
+          }
+        },
+        "description": "Response chuẩn bọc dữ liệu chi tiết access log."
+      },
+      "UserAccessLogs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "osOfDevice": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Bản ghi access log dạng cơ bản, thường dùng cho các endpoint tra cứu chi tiết hoặc theo username."
+      },
+      "ResponseDataListUserAccessLogInfoDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserAccessLogInfoDTO"
+            }
+          }
+        },
+        "description": "Response chuẩn bọc danh sách access log."
+      },
+      "AccessLogAnalyticsDTO": {
+        "type": "object",
+        "properties": {
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm backend tạo báo cáo analytics."
+          },
+          "totalAccessLogs": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tổng số access log trong phạm vi dữ liệu được phân tích."
+          },
+          "accountTypeChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Phân bố access log theo loại account hoặc khoá."
+          },
+          "dailyChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ số lượng access log theo từng ngày."
+          },
+          "hourlyChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ số lượng access log theo khung giờ trong ngày."
+          },
+          "growth": {
+            "$ref": "#/components/schemas/PeriodGrowthDTO",
+            "description": "Khối báo cáo tăng trưởng access log giữa hai kỳ liên tiếp."
+          }
+        },
+        "description": "Báo cáo phân tích access log trong một khoảng ngày gần nhất, bao gồm biểu đồ và số liệu tăng trưởng theo kỳ."
+      },
+      "AccountAnalyticsDTO": {
+        "type": "object",
+        "properties": {
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm backend tạo báo cáo analytics."
+          },
+          "totalAccounts": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tổng số account trong phạm vi dữ liệu được phân tích."
+          },
+          "accountTypeChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Phân bố account theo loại hoặc khoá."
+          },
+          "dailyChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ số lượng account được tạo theo từng ngày."
+          },
+          "hourlyChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ số lượng account được tạo theo từng giờ."
+          },
+          "growth": {
+            "$ref": "#/components/schemas/PeriodGrowthDTO",
+            "description": "Khối báo cáo tăng trưởng account giữa hai kỳ liên tiếp."
+          },
+          "statistics": {
+            "$ref": "#/components/schemas/AccountStatisticsDTO",
+            "description": "Khối thống kê account chi tiết theo các mốc thời gian chuẩn."
+          }
+        },
+        "description": "Báo cáo phân tích account trong một khoảng ngày gần nhất, bao gồm biểu đồ phân bổ, xu hướng theo ngày/giờ và tăng trưởng theo kỳ."
+      },
+      "AccountBatchReportDTO": {
+        "type": "object",
+        "properties": {
+          "batchCode": {
+            "type": "string"
+          },
+          "batchName": {
+            "type": "string"
+          },
+          "totalAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "inactiveAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dormantAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "unknownAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "oldestAccountInBatch": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "newestAccountInBatch": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountReportDTO"
+            }
+          }
+        },
+        "description": "Báo cáo chi tiết của một batch account."
+      },
+      "AccountBatchStatsDTO": {
+        "type": "object",
+        "properties": {
+          "batchCode": {
+            "type": "string"
+          },
+          "batchName": {
+            "type": "string"
+          },
+          "totalAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "inactiveAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dormantAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "unknownAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "oldestAccountInBatch": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "newestAccountInBatch": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Thống kê trạng thái account của một batch, không bao gồm danh sách account chi tiết."
+      },
+      "AccountBatchStatsSummaryDTO": {
+        "type": "object",
+        "properties": {
+          "totalAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalBatches": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "largestBatch": {
+            "type": "string"
+          },
+          "smallestBatch": {
+            "type": "string"
+          },
+          "totalActiveAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalInactiveAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalDormantAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalUnknownAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "batchStats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBatchStatsDTO"
+            }
+          }
+        },
+        "description": "Khối tổng hợp thống kê trạng thái trên toàn bộ batch account."
+      },
+      "AccountBatchSummaryDTO": {
+        "type": "object",
+        "properties": {
+          "totalAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalBatches": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "largestBatch": {
+            "type": "string"
+          },
+          "smallestBatch": {
+            "type": "string"
+          },
+          "batchReports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBatchReportDTO"
+            }
+          }
+        },
+        "description": "Khối tổng quan toàn bộ batch account."
+      },
+      "AccountReportDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "accountType": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "daysSinceCreated": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accountStatus": {
+            "type": "string"
+          }
+        },
+        "description": "Thông tin account ở định dạng phục vụ báo cáo và dashboard."
+      },
+      "AccountStatisticsDTO": {
+        "type": "object",
+        "properties": {
+          "totalAccounts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accountsCreatedToday": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accountsCreatedThisWeek": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accountsCreatedThisMonth": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accountsCreatedThisYear": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastAccountCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "oldestAccountCreated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Khối thống kê account theo các mốc thời gian tiêu chuẩn."
+      },
+      "CategoryCountDTO": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "Cặp nhãn - giá trị dùng cho biểu đồ cột, tròn hoặc timeline đơn giản."
+      },
+      "PeriodGrowthDTO": {
+        "type": "object",
+        "properties": {
+          "currentPeriodLabel": {
+            "type": "string",
+            "description": "Nhãn của kỳ hiện tại, ví dụ `30 ngày gần nhất`.",
+            "example": "30 ngay gan nhat"
+          },
+          "previousPeriodLabel": {
+            "type": "string",
+            "description": "Nhãn của kỳ liền trước để so sánh.",
+            "example": "30 ngay truoc do"
+          },
+          "currentCount": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tổng số bản ghi trong kỳ hiện tại.",
+            "example": 240
+          },
+          "previousCount": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tổng số bản ghi trong kỳ trước.",
+            "example": 180
+          },
+          "difference": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Chênh lệch tuyệt đối giữa kỳ hiện tại và kỳ trước.",
+            "example": 60
+          },
+          "growthRatePercent": {
+            "type": "number",
+            "format": "double",
+            "description": "Tỷ lệ tăng trưởng phần trăm. Giá trị âm thể hiện suy giảm, giá trị dương thể hiện tăng trưởng.",
+            "example": 33.33
+          }
+        },
+        "description": "Thông tin tăng trưởng giữa hai kỳ liên tiếp, dùng để so sánh xu hướng hiện tại với kỳ trước."
+      },
+      "ReportDashboardDTO": {
+        "type": "object",
+        "properties": {
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm tạo snapshot dashboard."
+          },
+          "accountStatistics": {
+            "$ref": "#/components/schemas/AccountStatisticsDTO",
+            "description": "Khối thống kê account theo hôm nay, tuần, tháng, năm."
+          },
+          "accountBatchSummary": {
+            "$ref": "#/components/schemas/AccountBatchSummaryDTO",
+            "description": "Khối tổng quan batch account."
+          },
+          "accountBatchStatsSummary": {
+            "$ref": "#/components/schemas/AccountBatchStatsSummaryDTO",
+            "description": "Khối tổng hợp trạng thái account theo batch."
+          },
+          "totalReviews": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tổng số review thu thập được từ người dùng."
+          },
+          "totalDevices": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tổng số thiết bị đã ghi nhận."
+          },
+          "totalAccessLogs": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tổng số bản ghi truy cập."
+          },
+          "recentAccounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountReportDTO"
+            },
+            "description": "Danh sách account mới nhất."
+          },
+          "allAccounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountReportDTO"
+            },
+            "description": "Danh sách toàn bộ account ở dạng report."
+          },
+          "accountBatches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBatchReportDTO"
+            },
+            "description": "Danh sách report theo từng batch."
+          },
+          "accountBatchStats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBatchStatsDTO"
+            },
+            "description": "Danh sách thống kê trạng thái theo từng batch."
+          },
+          "accountStatusChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ phân bố trạng thái account."
+          },
+          "accountCreationChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ timeline tạo account."
+          },
+          "accessLogOsChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ phân bố access log theo hệ điều hành thiết bị."
+          },
+          "deviceOsChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ phân bố thiết bị theo hệ điều hành."
+          },
+          "reviewTimelineChart": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCountDTO"
+            },
+            "description": "Biểu đồ timeline review của người dùng."
+          },
+          "accessLogAnalytics": {
+            "$ref": "#/components/schemas/AccessLogAnalyticsDTO",
+            "description": "Khối analytics và tăng trưởng access log."
+          },
+          "accountAnalytics": {
+            "$ref": "#/components/schemas/AccountAnalyticsDTO",
+            "description": "Khối analytics và tăng trưởng account."
+          },
+          "accountGrowthOverTime": {
+            "$ref": "#/components/schemas/TimeGrowthReportDTO",
+            "description": "Khối báo cáo tăng trưởng account theo chuỗi thời gian."
+          },
+          "accessLogGrowthOverTime": {
+            "$ref": "#/components/schemas/TimeGrowthReportDTO",
+            "description": "Khối báo cáo tăng trưởng access log theo chuỗi thời gian."
+          }
+        },
+        "description": "Payload dashboard tổng hợp mọi khối báo cáo chính phục vụ màn hình quản trị."
+      },
+      "ResponseDataReportDashboardDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ReportDashboardDTO"
+          }
+        },
+        "description": "Response chuẩn bọc dữ liệu dashboard tổng hợp."
+      },
+      "ResponseDataAccountStatisticsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AccountStatisticsDTO"
+          }
+        },
+        "description": "Response chuẩn bọc dữ liệu thống kê account."
+      },
+      "ResponseDataListAccountReportDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountReportDTO"
+            }
+          }
+        },
+        "description": "Response chuẩn bọc danh sách account report."
+      },
+      "ResponseDataAccountBatchReportDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AccountBatchReportDTO"
+          }
+        },
+        "description": "Response chuẩn bọc báo cáo chi tiết một batch."
+      },
+      "ResponseDataAccountBatchSummaryDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AccountBatchSummaryDTO"
+          }
+        },
+        "description": "Response chuẩn bọc tổng quan batch account."
+      },
+      "ResponseDataAccountBatchStatsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AccountBatchStatsDTO"
+          }
+        },
+        "description": "Response chuẩn bọc thống kê trạng thái của một batch."
+      },
+      "ResponseDataAccountBatchStatsSummaryDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AccountBatchStatsSummaryDTO"
+          }
+        },
+        "description": "Response chuẩn bọc tổng hợp thống kê trạng thái theo batch."
+      },
+      "ResponseDataListAccountBatchStatsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBatchStatsDTO"
+            }
+          }
+        },
+        "description": "Response chuẩn bọc danh sách thống kê trạng thái các batch."
+      },
+      "ResponseDataListString": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "Response chuẩn bọc danh sách chuỗi, thường dùng cho mã batch."
+      },
+      "ResponseDataListAccountBatchReportDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBatchReportDTO"
+            }
+          }
+        },
+        "description": "Response chuẩn bọc danh sách báo cáo batch account."
+      },
+      "ResponseDataAccountAnalyticsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AccountAnalyticsDTO"
+          }
+        },
+        "description": "Response chuẩn bọc dữ liệu analytics và tăng trưởng account."
+      },
+      "ResponseDataAccessLogAnalyticsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AccessLogAnalyticsDTO"
+          }
+        },
+        "description": "Response chuẩn bọc dữ liệu analytics và tăng trưởng access log."
+      },
+      "NoticeFirebaseDTO": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "registrationTokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AccountInfoDTO": {
+        "type": "object",
+        "description": "Thông tin account phục vụ truy vấn cho frontend",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID của account",
+            "example": "686ea1d0f8f3a7a1a0b1c234"
+          },
+          "username": {
+            "type": "string",
+            "description": "Tên đăng nhập",
+            "example": "6656485"
+          },
+          "accountType": {
+            "type": "string",
+            "description": "Loại tài khoản suy ra từ username",
+            "example": "Khoá 66"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm tạo account"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm cập nhật gần nhất"
+          }
+        }
+      },
+      "ResponseDataAccountInfoDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AccountInfoDTO"
+          }
+        },
+        "description": "Response chuẩn bọc thông tin account."
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Thực thể account gốc do backend trả về ở một số endpoint đặc thù."
+      },
+      "PageResponseDTOAccountInfoDTO": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountInfoDTO"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        },
+        "description": "Kết quả phân trang cho danh sách account."
+      },
+      "ResponseDataPageResponseDTOAccountInfoDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResponseDTOAccountInfoDTO"
+          }
+        },
+        "description": "Response chuẩn bọc dữ liệu phân trang account."
+      },
+      "ResponseDataTimeGrowthReportDTO": {
+        "type": "object",
+        "description": "Response chuẩn bọc báo cáo tăng trưởng theo thời gian cho account hoặc access log.",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Mã trạng thái xử lý."
+          },
+          "message": {
+            "type": "string",
+            "description": "Thông điệp từ backend."
+          },
+          "data": {
+            "$ref": "#/components/schemas/TimeGrowthReportDTO"
+          }
+        }
+      },
+      "TimeSeriesPointDTO": {
+        "type": "object",
+        "description": "Một điểm dữ liệu trong chuỗi thời gian, dùng để dựng biểu đồ tăng trưởng.",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Nhãn hiển thị của mốc thời gian, ví dụ `2026-06-01` hoặc `Tuần 24`.",
+            "example": "2026-06-01"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm đại diện cho bucket thời gian."
+          },
+          "value": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Giá trị phát sinh trong bucket thời gian này.",
+            "example": 18
+          },
+          "cumulativeValue": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Giá trị luỹ kế đến hết mốc thời gian hiện tại. Hữu ích cho area chart tăng trưởng tích luỹ.",
+            "example": 240
+          },
+          "growthRatePercent": {
+            "type": "number",
+            "format": "double",
+            "description": "Tỷ lệ tăng trưởng của bucket hiện tại so với bucket liền trước. Có thể âm nếu giảm.",
+            "example": 12.5
+          }
+        }
+      },
+      "TimeGrowthReportDTO": {
+        "type": "object",
+        "description": "Báo cáo tăng trưởng theo thời gian cho một loại dữ liệu như account hoặc access log.",
+        "properties": {
+          "metricType": {
+            "type": "string",
+            "description": "Loại dữ liệu đang được thống kê.",
+            "example": "account"
+          },
+          "groupBy": {
+            "type": "string",
+            "description": "Đơn vị gom nhóm của chuỗi thời gian.",
+            "enum": [
+              "day",
+              "week",
+              "month"
+            ],
+            "example": "day"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Mốc bắt đầu của khoảng thời gian báo cáo."
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Mốc kết thúc của khoảng thời gian báo cáo."
+          },
+          "totalInRange": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tổng số bản ghi phát sinh trong toàn bộ khoảng thời gian được chọn.",
+            "example": 240
+          },
+          "averagePerBucket": {
+            "type": "number",
+            "format": "double",
+            "description": "Giá trị trung bình trên mỗi bucket thời gian.",
+            "example": 8
+          },
+          "growthSummary": {
+            "$ref": "#/components/schemas/PeriodGrowthDTO",
+            "description": "Tổng hợp tăng trưởng của kỳ hiện tại so với kỳ trước."
+          },
+          "timeline": {
+            "type": "array",
+            "description": "Danh sách các điểm dữ liệu theo thời gian để render biểu đồ tăng trưởng.",
+            "items": {
+              "$ref": "#/components/schemas/TimeSeriesPointDTO"
+            }
+          }
+        }
+      }
+    }
+  }
+}
